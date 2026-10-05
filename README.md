@@ -57,16 +57,37 @@ interpolate: false
 
 ## 安装
 
-```
-plugin_manager  action: install_bundle  target: <本目录的绝对路径>
+已发布到 npm：[`@someok/dsh-project-system-prompt`](https://www.npmjs.com/package/@someok/dsh-project-system-prompt)
+
+在终端里装进你的 profile（`<profile>` 换成 profile 名，如 `desktop`、`web`）：
+
+```bash
+dsh plugin --profile <profile> add @someok/dsh-project-system-prompt
 ```
 
-安装后 `~/.dsh/profiles/<profile>/package.json` 的 `dsh.profile.bundles` 会多出 `@someok/dsh-project-system-prompt`，其 `cordis.patch.yml` 插入 `project-system-prompt` 行（该行以相对路径 `./lib/plugin.js` 引用插件，路径相对 patch 文件解析）。
+也可以让会话内的 agent 直接装：
+
+```
+plugin_manager  action: install_bundle  target: @someok/dsh-project-system-prompt
+```
+
+两种方式都会把依赖写进 `~/.dsh/profiles/<profile>/package.json`，并把 `@someok/dsh-project-system-prompt` 追加进 `dsh.profile.bundles`；其 `cordis.patch.yml` 插入 `project-system-prompt` 行（该行以相对路径 `./lib/plugin.js` 引用插件，路径相对 patch 文件解析）。装好后**重启 Desktop 应用**生效。
+
+### 本地开发：装工作区里的代码
+
+要改插件本身时，用 `link:` 指向工作区，免得每改一行都发一次版：
+
+```bash
+dsh plugin --profile <profile> add link:/绝对路径/dsh-project-system-prompt
+```
+
+这样 `node_modules/@someok/dsh-project-system-prompt` 只是指向工作区的符号链接，跑的就是你正在编辑的代码。
 
 ### 改完插件代码怎么生效
 
 - 当前进程**不会**热重载本插件：DSH 的 HMR 监视 profile 目录并忽略 `**/node_modules`，而 bundle 是以 `link:` 安装的（代码在工作区）。
 - 生效方式：重启 Desktop 应用（profile 启动时重新导入），或对 bundle / 该行做一次 disable→enable 触发重新装配——注意 ESM 模块缓存按 URL 命中，**同一路径不会重新求值**，只有改了模块路径（重命名文件并同步 `cordis.patch.yml`）才会真正加载新代码。
+- 从 npm 安装的版本升级后同样要重启：`dsh plugin --profile <profile> add @someok/dsh-project-system-prompt@<新版本>`，然后重启应用。
 
 ## 结构
 
