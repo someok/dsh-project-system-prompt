@@ -1,0 +1,12 @@
+# @someok/dsh-project-system-prompt extends the profile with a project-level system
+# prompt, resolved from the session's project root on every assembly:
+#
+#   .dsh/SYSTEM.md         | SYSTEM.md          -> replaces the model prompt
+#   .dsh/SYSTEM.append.md  | SYSTEM.append.md   -> appended after the prompt
+#
+# Project text may reference prompt variables ({{model}}, {{cwd}}, {{provider}});
+# a frontmatter block with `interpolate: false` turns that off per file.
+# With neither file present the selected agent preset keeps owning the prompt.
+- insert:
+    - id: project-system-prompt
+      name: ./lib/plugin.js
