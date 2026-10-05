@@ -1,7 +1,6 @@
 {
   "name": "@someok/dsh-project-system-prompt",
   "version": "0.2.1",
-  "private": true,
   "description": "Project-level SYSTEM.md / SYSTEM.append.md for DeepSeek Harness: overrides or extends the model system prompt from the session's project root, with opt-out variable interpolation.",
   "type": "module",
   "main": "lib/plugin.js",
@@ -22,6 +21,9 @@
     "system-prompt"
   ],
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
